@@ -20,8 +20,9 @@ class pandasModel(QtCore.QAbstractTableModel):
         QtCore.QAbstractTableModel.__init__(self)
 
         self._data = data
+        self.colors = dict()
 
-    def myGetData(self):
+    def get_data(self):
 
         return self._data
 
@@ -29,10 +30,9 @@ class pandasModel(QtCore.QAbstractTableModel):
         if index.isValid():
             if role == QtCore.Qt.ToolTipRole:
                 # no tooltips here
-                pass
+                return QtGui.QBrush(QtCore.Qt.magenta)
             elif role in [QtCore.Qt.DisplayRole, QtCore.Qt.EditRole]:
                 columnName = self._data.columns[index.column()]
-
                 realRow = index.row()
                 retVal = self._data.loc[realRow, columnName]
                 if isinstance(retVal, np.float64):
@@ -61,35 +61,7 @@ class pandasModel(QtCore.QAbstractTableModel):
                 return QtCore.QVariant()
 
             elif role == QtCore.Qt.ForegroundRole:
-                columnName = self._data.columns[index.column()]
-                colorColumns = ["Symbol", "Shape Type"]
-                # if columnName == 'Symbol':
-                if columnName in colorColumns:
-                    # don't get col from index, get from name
-                    realRow = self._data.index[index.row()]
-                    face_color = self._data.loc[realRow, "Face Color"]  # rgba
-                    # TODO: face_color is sometimes a scalar
-                    # try:
-                    #  _color = (np.array(color.getRgb()) / 255).astype(np.float32)
-                    try:
-                        # r = int(face_color[0] * 255)
-                        # g = int(face_color[1] * 255)
-                        # b = int(face_color[2] * 255)
-                        # alpha = int(face_color[3] * 255)
-                        # theColor = QtCore.QVariant(QtGui.QColor(r, g, b, alpha))
-                        # swap AA
-                        # napari uses proper order #RRGGBBAA
-                        # pyqt uses stange order #AARRGGBB
-                        face_color = (
-                            face_color[0] + face_color[7:9] + face_color[1:7]
-                        )
-                        theColor = QtCore.QVariant(QtGui.QColor(face_color))
-                        return theColor
-                    except (IndexError):
-                        print(
-                            f'expecting "Face Color"" as list of rgba, got scalar of {face_color}'
-                        )
-                        return QtCore.QVariant()
+
                 return QtCore.QVariant()
 
             elif role == QtCore.Qt.BackgroundRole:

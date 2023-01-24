@@ -55,7 +55,7 @@ class Tabulour(QtWidgets.QTableView):
 
     def _refreshColumns(self):
 
-        columns = self._data.myGetData().columns
+        columns = self._data.get_data().columns
         for column in columns:
             colIdx = columns.get_loc(column)
             self.setColumnHidden(colIdx, False)
@@ -64,9 +64,15 @@ class Tabulour(QtWidgets.QTableView):
 
         row = self.proxy.mapToSource(item).row()
         # column = self.proxy.mapToSource(item).column()
-        if self._time_key in self._data.myGetData():
+        if self._time_key in self._data.get_data():
 
             self._viewer.dims.set_point(
-                0, self._data.myGetData()[self._time_key][row]
+                0, self._data.get_data()[self._time_key][row]
             )
-            print("time", self._data.myGetData()[self._time_key][row])
+            self.setStyleSheet(
+                """
+                QTableView::item:selected:active {
+                        background: #013220;
+                    }
+                """
+            )
