@@ -4,6 +4,8 @@ import napari
 import pandas as pd
 from qtpy import QtCore, QtWidgets
 
+from ._data_model import pandasModel
+
 
 class Tabulour(QtWidgets.QTableView):
 
@@ -21,9 +23,10 @@ class Tabulour(QtWidgets.QTableView):
     ):
 
         super().__init__(parent)
+        QtCore.QAbstractTableModel.__init__(self)
         self._layer = layer
         self._viewer = viewer
-        self._data = data
+        self._data = pandasModel(data)
         self._time_key = time_key
         self._other_keys = other_keys
 
@@ -43,12 +46,6 @@ class Tabulour(QtWidgets.QTableView):
         # to allow click on already selected row
         self.clicked.connect(self._on_user_click)
 
-    def rowCount(self):
-        return self._data.shape[0]
-
-    def columnCount(self):
-        return self._data.shape[1]
-
     def _set_model(self):
 
         self.proxy = QtCore.QSortFilterProxyModel()
@@ -58,7 +55,7 @@ class Tabulour(QtWidgets.QTableView):
 
     def _refreshColumns(self):
 
-        columns = self._data.columns
+        columns = self._data.myGetData().columns
         for column in columns:
             colIdx = columns.get_loc(column)
             self.setColumnHidden(colIdx, False)
@@ -67,6 +64,9 @@ class Tabulour(QtWidgets.QTableView):
 
         row = self.proxy.mapToSource(item).row()
         # column = self.proxy.mapToSource(item).column()
-        if self._time_key in self._data:
+        if self._time_key in self._data.myGetData():
 
-            self._viewer.dims.set_point(0, self._data[self._time_key][row])
+            self._viewer.dims.set_point(
+                0, self._data.myGetData()[self._time_key][row]
+            )
+            print("time", self._data.myGetData()[self._time_key][row])
