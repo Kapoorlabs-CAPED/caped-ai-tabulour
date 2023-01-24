@@ -53,26 +53,26 @@ def test_table():
             20,
         ],
         "brinjal": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
             10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
             20,
+            30,
+            40,
+            50,
+            60,
+            70,
+            80,
+            90,
+            100,
+            111,
+            121,
+            131,
+            141,
+            151,
+            161,
+            171,
+            181,
+            191,
+            201,
         ],
         "tomato": [
             3,
@@ -99,7 +99,10 @@ def test_table():
     }
     data = pd.DataFrame(data=d, columns=["time", "value", "brinjal", "tomato"])
     viewer = napari.Viewer()
-    table_tab = Tabulour(viewer=viewer, data=data, time_key="time")
+    table_tab = Tabulour(
+        viewer=viewer, data=data, time_key="time", other_key="brinjal"
+    )
+
     _table_tab_layout = QtWidgets.QVBoxLayout()
     table_tab.setLayout(_table_tab_layout)
     _table_tab_layout.addWidget(table_tab)

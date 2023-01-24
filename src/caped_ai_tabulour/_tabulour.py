@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 
 import napari
 import pandas as pd
@@ -19,7 +19,8 @@ class Tabulour(QtWidgets.QTableView):
         layer: napari.layers.Layer = None,
         data: pd.DataFrame = None,
         time_key: Union[int, str] = None,
-        other_keys: List[Union[int, str]] = None,
+        other_key: Union[int, str] = None,
+        unique_cells: dict() = None,
     ):
 
         super().__init__(parent)
@@ -28,7 +29,8 @@ class Tabulour(QtWidgets.QTableView):
         self._viewer = viewer
         self._data = pandasModel(data)
         self._time_key = time_key
-        self._other_keys = other_keys
+        self._other_key = other_key
+        self._unique_cells = unique_cells
 
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
@@ -64,7 +66,10 @@ class Tabulour(QtWidgets.QTableView):
 
         row = self.proxy.mapToSource(item).row()
         # column = self.proxy.mapToSource(item).column()
-        if self._time_key in self._data.get_data():
+        if (
+            self._time_key is not None
+            and self._time_key in self._data.get_data()
+        ):
 
             self._viewer.dims.set_point(
                 0, self._data.get_data()[self._time_key][row]
@@ -76,3 +81,17 @@ class Tabulour(QtWidgets.QTableView):
                     }
                 """
             )
+            if (
+                self._other_key is not None
+                and self._other_key in self._data.get_data()
+            ):
+
+                value_of_interest = self._data.get_data()[self._other_key][row]
+                if self._unique_cells is not None:
+                    self._display_unique_cells(
+                        value_of_interest=value_of_interest
+                    )
+
+    def _display_unique_cells(self, value_of_interest):
+
+        return self._unique_cells[int(value_of_interest)]
