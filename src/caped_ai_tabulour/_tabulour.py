@@ -45,6 +45,7 @@ class Tabulour(QtWidgets.QTableView):
         self.setSortingEnabled(True)
 
         self._set_model()
+        self._unique_cell_val = None
         # to allow click on already selected row
         self.clicked.connect(self._on_user_click)
 
@@ -88,10 +89,15 @@ class Tabulour(QtWidgets.QTableView):
 
                 value_of_interest = self._data.get_data()[self._other_key][row]
                 if self._unique_cells is not None:
-                    self._display_unique_cells(
+                    self._unique_cell_val = self._display_unique_cells(
                         value_of_interest=value_of_interest
                     )
 
     def _display_unique_cells(self, value_of_interest):
 
-        return self._unique_cells[int(value_of_interest)]
+        if int(value_of_interest) in self._unique_cells:
+            return self._unique_cells[int(value_of_interest)]
+
+    def _get__unique_cell_val(self):
+
+        return self._unique_cell_val

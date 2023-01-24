@@ -99,8 +99,14 @@ def test_table():
     }
     data = pd.DataFrame(data=d, columns=["time", "value", "brinjal", "tomato"])
     viewer = napari.Viewer()
+    unique_cells = {}
+    unique_cells[121] = {"Name": 1, "Age": 12}
     table_tab = Tabulour(
-        viewer=viewer, data=data, time_key="time", other_key="brinjal"
+        viewer=viewer,
+        data=data,
+        time_key="time",
+        other_key="brinjal",
+        unique_cells=unique_cells,
     )
 
     _table_tab_layout = QtWidgets.QVBoxLayout()
