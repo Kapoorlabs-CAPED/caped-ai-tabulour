@@ -24,7 +24,6 @@ class Tabulour(QtWidgets.QTableView):
     ):
 
         super().__init__(parent)
-        QtCore.QAbstractTableModel.__init__(self)
         self._layer = layer
         self._viewer = viewer
         self._data = pandasModel(data)
