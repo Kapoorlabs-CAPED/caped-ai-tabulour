@@ -109,6 +109,21 @@ class pandasModel(QtCore.QAbstractTableModel):
         #
         return QtCore.QVariant()
 
+    def headerData(self, col, orientation, role):
+        if role == QtCore.Qt.DisplayRole:
+            if orientation == QtCore.Qt.Horizontal:
+                try:
+                    return self._data.columns[col]
+                except (IndexError):
+                    print(
+                        f"IndexError for col:{col} len:{len(self._data.columns)}, shape:{self._data.shape}"
+                    )
+                    # raise
+            elif orientation == QtCore.Qt.Vertical:
+                # this is to show pandas 'index' column
+                return col
+        return QtCore.QVariant()
+
     def rowCount(self, parent=None):
         return self._data.shape[0]
 
