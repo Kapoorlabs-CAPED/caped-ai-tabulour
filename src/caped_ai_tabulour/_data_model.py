@@ -20,7 +20,6 @@ class pandasModel(QtCore.QAbstractTableModel):
         QtCore.QAbstractTableModel.__init__(self)
 
         self._data = data
-        self.colors = dict()
 
     def get_data(self):
 
@@ -97,7 +96,9 @@ class pandasModel(QtCore.QAbstractTableModel):
         return QtCore.QVariant()
 
     def rowCount(self, parent=None):
-        return self._data.shape[0]
+        if self._data is not None:
+            return self._data.shape[0]
 
     def columnCount(self, parnet=None):
-        return self._data.shape[1]
+        if self._data is not None:
+            return self._data.shape[1]

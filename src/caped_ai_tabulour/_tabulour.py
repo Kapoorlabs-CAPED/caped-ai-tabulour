@@ -26,7 +26,10 @@ class Tabulour(QtWidgets.QTableView):
         super().__init__(parent)
         self._layer = layer
         self._viewer = viewer
-        self._data = pandasModel(data)
+        if data is not None:
+            self._data = pandasModel(data)
+        else:
+            self._data = None
         self._time_key = time_key
         self._other_key = other_key
         self._unique_cells = unique_cells
@@ -48,12 +51,61 @@ class Tabulour(QtWidgets.QTableView):
         # to allow click on already selected row
         self.clicked.connect(self._on_user_click)
 
+    @property
+    def viewer(self):
+        return self._viewer
+
+    @viewer.setter
+    def viewer(self, value):
+        self._viewer = value
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def layer(self):
+        return self._layer
+
+    @layer.setter
+    def layer(self, value):
+        self._layer = value
+
+    @property
+    def time_key(self):
+        return self._time_key
+
+    @time_key.setter
+    def time_key(self, value):
+        self._time_key = value
+
+    @property
+    def other_key(self):
+        return self._other_key
+
+    @other_key.setter
+    def other_key(self, value):
+        self._other_key = value
+
+    @property
+    def unique_cells(self):
+        return self._unique_cells
+
+    @unique_cells.setter
+    def unique_cells(self, value):
+        self._unique_cells = value
+
     def _set_model(self):
 
-        self.proxy = QtCore.QSortFilterProxyModel()
-        self.proxy.setSourceModel(self._data)
-        self.setModel(self.proxy)
-        self._refreshColumns()
+        if self._data is not None:
+            self.proxy = QtCore.QSortFilterProxyModel()
+            self.proxy.setSourceModel(self._data)
+            self.setModel(self.proxy)
+            self._refreshColumns()
 
     def _refreshColumns(self):
 
@@ -72,7 +124,7 @@ class Tabulour(QtWidgets.QTableView):
         ):
 
             self._viewer.dims.set_point(
-                0, self._data.get_data()[self._time_key][row]
+                0, int(float(self._data.get_data()[self._time_key][row]))
             )
             self.setStyleSheet(
                 """

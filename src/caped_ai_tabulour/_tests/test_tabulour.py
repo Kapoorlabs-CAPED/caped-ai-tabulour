@@ -1,6 +1,5 @@
 import napari
 import pandas as pd
-from qtpy import QtWidgets
 
 from caped_ai_tabulour._tabulour import Tabulour
 
@@ -109,9 +108,6 @@ def test_table():
         unique_cells=unique_cells,
     )
 
-    _table_tab_layout = QtWidgets.QVBoxLayout()
-    table_tab.setLayout(_table_tab_layout)
-    _table_tab_layout.addWidget(table_tab)
     viewer.window.add_dock_widget(table_tab)
     napari.run()
 
