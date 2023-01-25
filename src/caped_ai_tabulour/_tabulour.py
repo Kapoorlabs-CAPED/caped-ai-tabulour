@@ -20,7 +20,7 @@ class Tabulour(QtWidgets.QTableView):
         data: pd.DataFrame = None,
         time_key: Union[int, str] = None,
         other_key: Union[int, str] = None,
-        unique_cells: dict() = None,
+        unique_tracks: dict() = None,
     ):
 
         super().__init__(parent)
@@ -32,12 +32,12 @@ class Tabulour(QtWidgets.QTableView):
             self._data = None
         self._time_key = time_key
         self._other_key = other_key
-        self._unique_cells = unique_cells
+        self._unique_tracks = unique_tracks
 
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
-        self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.AllEditTriggers)
 
         self.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
 
@@ -92,12 +92,12 @@ class Tabulour(QtWidgets.QTableView):
         self._other_key = value
 
     @property
-    def unique_cells(self):
-        return self._unique_cells
+    def unique_tracks(self):
+        return self._unique_tracks
 
-    @unique_cells.setter
-    def unique_cells(self, value):
-        self._unique_cells = value
+    @unique_tracks.setter
+    def unique_tracks(self, value):
+        self._unique_tracks = value
 
     def _set_model(self):
 
@@ -139,16 +139,17 @@ class Tabulour(QtWidgets.QTableView):
             ):
 
                 value_of_interest = self._data.get_data()[self._other_key][row]
-                if self._unique_cells is not None:
-                    self._unique_cell_val = self._display_unique_cells(
+                if self._unique_tracks is not None:
+                    self._unique_cell_val = self._display_unique_tracks(
                         value_of_interest=value_of_interest
                     )
 
-    def _display_unique_cells(self, value_of_interest):
+    def _display_unique_tracks(self, value_of_interest):
 
-        if int(value_of_interest) in self._unique_cells:
-            return self._unique_cells[int(value_of_interest)]
+        # Gives back tracklets over time ID, T, Z, Y, X
+        if int(value_of_interest) in self._unique_tracks:
+            return self._unique_tracks[int(value_of_interest)]
 
-    def _get__unique_cell_val(self):
+    def get_unique_cell_val(self):
 
         return self._unique_cell_val
