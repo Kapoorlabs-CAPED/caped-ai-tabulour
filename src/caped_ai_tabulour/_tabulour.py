@@ -1,4 +1,3 @@
-import math
 from typing import List, Union
 
 import napari
@@ -248,10 +247,7 @@ class Tabulour(QtWidgets.QTableView):
                     [location for location in current_tracklet_location]
                 )
                 self._sizes.append(
-                    [
-                        math.pow(volume, 1.0 / 2.0)
-                        for volume in current_tracklet_props
-                    ]
+                    [volume for volume in current_tracklet_props]
                 )
             for layer in list(self._viewer.layers):
                 if "Boxes" == layer.name:
