@@ -1,6 +1,8 @@
-from typing import Union
+import math
+from typing import List, Union
 
 import napari
+import numpy as np
 import pandas as pd
 from qtpy import QtCore, QtWidgets
 
@@ -18,10 +20,20 @@ class Tabulour(QtWidgets.QTableView):
         viewer: napari.Viewer = None,
         layer: napari.layers.Layer = None,
         data: pd.DataFrame = None,
+        zcalibration: int = 1,
+        ycalibration: int = 1,
+        xcalibration: int = 1,
         time_key: Union[int, str] = None,
         id_key: Union[int, str] = None,
         size_key: Union[int, str] = None,
+        dividing_key: Union[int, str] = None,
         unique_tracks: dict() = None,
+        unique_track_properties: dict() = None,
+        boxes: List = [],
+        sizes: List = [],
+        plugin=None,
+        dividing_choices=None,
+        normal_choices=None,
     ):
 
         super().__init__(parent)
@@ -34,7 +46,17 @@ class Tabulour(QtWidgets.QTableView):
         self._time_key = time_key
         self._id_key = id_key
         self._size_key = size_key
+        self._dividing_key = dividing_key
         self._unique_tracks = unique_tracks
+        self._unique_track_properties = unique_track_properties
+        self._boxes = boxes
+        self._sizes = sizes
+        self._zcalibration = zcalibration
+        self._ycalibration = ycalibration
+        self._xcalibration = xcalibration
+        self._plugin = plugin
+        self._dividing_choices = dividing_choices
+        self._normal_choices = normal_choices
 
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
@@ -50,6 +72,7 @@ class Tabulour(QtWidgets.QTableView):
 
         self._set_model()
         self._unique_cell_val = None
+        self._unique_cell_val_properties = None
         # to allow click on already selected row
         # self.clicked.connect(self._on_user_click)
 
@@ -94,6 +117,14 @@ class Tabulour(QtWidgets.QTableView):
         self._id_key = value
 
     @property
+    def dividing_key(self):
+        return self._dividing_key
+
+    @dividing_key.setter
+    def dividing_key(self, value):
+        self._dividing_key = value
+
+    @property
     def unique_tracks(self):
         return self._unique_tracks
 
@@ -102,12 +133,84 @@ class Tabulour(QtWidgets.QTableView):
         self._unique_tracks = value
 
     @property
+    def unique_track_properties(self):
+        return self._unique_track_properties
+
+    @unique_track_properties.setter
+    def unique_track_properties(self, value):
+        self._unique_track_properties = value
+
+    @property
     def size_key(self):
         return self._size_key
 
     @size_key.setter
     def size_key(self, value):
         self._size_key = value
+
+    @property
+    def boxes(self):
+        return self._boxes
+
+    @boxes.setter
+    def boxes(self, value):
+        self._boxes = value
+
+    @property
+    def sizes(self):
+        return self._sizes
+
+    @sizes.setter
+    def sizes(self, value):
+        self._sizes = value
+
+    @property
+    def zcalibration(self):
+        return self._zcalibration
+
+    @zcalibration.setter
+    def zcalibration(self, value):
+        self._zcalibration = value
+
+    @property
+    def ycalibration(self):
+        return self._ycalibration
+
+    @ycalibration.setter
+    def ycalibration(self, value):
+        self._ycalibration = value
+
+    @property
+    def xcalibration(self):
+        return self._xcalibration
+
+    @xcalibration.setter
+    def xcalibration(self, value):
+        self._xcalibration = value
+
+    @property
+    def plugin(self):
+        return self._plugin
+
+    @plugin.setter
+    def plugin(self, value):
+        self._plugin = value
+
+    @property
+    def dividing_choices(self):
+        return self._dividing_choices
+
+    @dividing_choices.setter
+    def dividing_choices(self, value):
+        self._dividing_choices = value
+
+    @property
+    def normal_choices(self):
+        return self._normal_choices
+
+    @normal_choices.setter
+    def normal_choices(self, value):
+        self._normal_choices = value
 
     def _set_model(self):
 
@@ -126,19 +229,41 @@ class Tabulour(QtWidgets.QTableView):
 
     def _make_boxes(self, item):
 
-        row = self.proxy.mapToSource(item).row()
-        print(row)
+        self._boxes = []
+        self._sizes = []
         if (
             self._size_key is not None
             and self._size_key in self._data.get_data()
             and self._unique_cell_val is not None
         ):
             current_tracklet = self._unique_cell_val
-            print(current_tracklet.shape)
+            current_tracklet_properties = self._unique_cell_val_properties
+            print(current_tracklet_properties.shape, current_tracklet.shape)
+            ndim = current_tracklet.shape[1] - 1
             for i in range(current_tracklet.shape[0]):
                 # TZYX
                 current_tracklet_location = current_tracklet[i][1:]
-                print(current_tracklet_location)
+                current_tracklet_props = current_tracklet_properties[i][-2:-1]
+                self._boxes.append(
+                    [location for location in current_tracklet_location]
+                )
+                self._sizes.append(
+                    [
+                        math.pow(volume, 1.0 / 2.0)
+                        for volume in current_tracklet_props
+                    ]
+                )
+            for layer in list(self._viewer.layers):
+                if "Boxes" == layer.name:
+                    self._viewer.layers.remove(layer)
+            self._viewer.add_points(
+                np.array(self._boxes),
+                size=np.array(self._sizes),
+                name="Boxes",
+                face_color=[0] * 4,
+                edge_color="green",
+                ndim=ndim,
+            )
 
     def _on_user_click(self, item):
 
@@ -167,12 +292,34 @@ class Tabulour(QtWidgets.QTableView):
 
                 value_of_interest = self._data.get_data()[self._id_key][row]
                 if self._unique_tracks is not None:
-                    self._unique_cell_val = self._display_unique_tracks(
+                    (
+                        self._unique_cell_val,
+                        self._unique_cell_val_properties,
+                    ) = self._display_unique_tracks(
                         value_of_interest=value_of_interest
                     )
+
+                if self._plugin.track_id_box is not None:
+
+                    dividing_normal = self._data.get_data()[
+                        self._dividing_key
+                    ][row]
+                    if dividing_normal:
+                        self.plugin.track_model_type.value = "Dividing"
+                        self.plugin.track_id_box.choices = (
+                            self._dividing_choices
+                        )
+                    else:
+                        self.plugin.track_model_type.value = "Non-Dividing"
+                        self.plugin.track_id_box.choices = self._normal_choices
+
+                    self.plugin.track_id_box.value = value_of_interest
 
     def _display_unique_tracks(self, value_of_interest):
 
         # Gives back tracklets over time ID, T, Z, Y, X
         if int(value_of_interest) in self._unique_tracks:
-            return self._unique_tracks[int(value_of_interest)]
+            return (
+                self._unique_tracks[int(value_of_interest)],
+                self._unique_track_properties[int(value_of_interest)],
+            )
