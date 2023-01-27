@@ -236,10 +236,7 @@ class Tabulour(QtWidgets.QTableView):
     def save(self, event):
 
         name = QtWidgets.QFileDialog.getSaveFileName(self, "Save File")
-        print(name)
-        file = open(name, "w")
-        print(file)
-        self._data.get_data().to_csv(file)
+        self._data.get_data().to_csv(name + ".csv")
 
     def _make_boxes(self, item):
 
