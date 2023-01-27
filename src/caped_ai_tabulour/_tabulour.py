@@ -227,10 +227,18 @@ class Tabulour(QtWidgets.QTableView):
             self.setColumnHidden(colIdx, False)
 
     def contextMenuEvent(self, event):
+        self.menu = QtWidgets.QMenu(self)
+        saveAction = QtWidgets.QAction("Save", self)
+        saveAction.triggered.connect(lambda: self.save(event))
+        self.menu.addAction(saveAction)
+        print(event)
+
+    def save(self, event):
         if (
             event.type() == QtCore.QEvent.MouseButtonPress
             and event.buttons() == QtCore.Qt.RightButton
         ):
+            print("here")
             name = QtWidgets.QFileDialog.getSaveFileName(self, "Save File")
             file = open(name, "w")
 
