@@ -3,7 +3,7 @@ from typing import List, Union
 import napari
 import numpy as np
 import pandas as pd
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 from ._data_model import pandasModel
 
@@ -227,7 +227,6 @@ class Tabulour(QtWidgets.QTableView):
             self.setColumnHidden(colIdx, False)
 
     def contextMenuEvent(self, event):
-        self.menu = QtGui.QMenu(self)
         if (
             event.type() == QtCore.QEvent.MouseButtonPress
             and event.buttons() == QtCore.Qt.RightButton
