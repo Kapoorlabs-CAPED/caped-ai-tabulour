@@ -3,7 +3,7 @@ from typing import List, Union
 import napari
 import numpy as np
 import pandas as pd
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 from ._data_model import pandasModel
 
@@ -231,18 +231,15 @@ class Tabulour(QtWidgets.QTableView):
         saveAction = QtWidgets.QAction("Save", self)
         saveAction.triggered.connect(lambda: self.save(event))
         self.menu.addAction(saveAction)
-        print(event)
+        self.menu.popup(QtGui.QCursor.pos())
 
     def save(self, event):
-        if (
-            event.type() == QtCore.QEvent.MouseButtonPress
-            and event.buttons() == QtCore.Qt.RightButton
-        ):
-            print("here")
-            name = QtWidgets.QFileDialog.getSaveFileName(self, "Save File")
-            file = open(name, "w")
 
-            self._data.get_data().to_csv(file)
+        print("here")
+        name = QtWidgets.QFileDialog.getSaveFileName(self, "Save File")
+        file = open(name, "w")
+
+        self._data.get_data().to_csv(file)
 
     def _make_boxes(self, item):
 
