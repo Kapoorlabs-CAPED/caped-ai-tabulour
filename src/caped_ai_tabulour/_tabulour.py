@@ -226,12 +226,16 @@ class Tabulour(QtWidgets.QTableView):
             colIdx = columns.get_loc(column)
             self.setColumnHidden(colIdx, False)
 
-    def _save_file(self):
+    def contextMenuEvent(self, event):
+        self.menu = QtGui.QMenu(self)
+        if (
+            event.type() == QtCore.QEvent.MouseButtonPress
+            and event.buttons() == QtCore.Qt.RightButton
+        ):
+            name = QtWidgets.QFileDialog.getSaveFileName(self, "Save File")
+            file = open(name, "w")
 
-        name = QtGui.QFileDialog.getSaveFileName(self, "Save File")
-        file = open(name, "w")
-
-        self._data.get_data().to_csv(file)
+            self._data.get_data().to_csv(file)
 
     def _make_boxes(self, item):
 
