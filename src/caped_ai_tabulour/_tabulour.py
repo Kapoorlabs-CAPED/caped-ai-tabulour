@@ -3,7 +3,7 @@ from typing import List, Union
 import napari
 import numpy as np
 import pandas as pd
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 
 from ._data_model import pandasModel
 
@@ -225,6 +225,13 @@ class Tabulour(QtWidgets.QTableView):
         for column in columns:
             colIdx = columns.get_loc(column)
             self.setColumnHidden(colIdx, False)
+
+    def _save_file(self):
+
+        name = QtGui.QFileDialog.getSaveFileName(self, "Save File")
+        file = open(name, "w")
+
+        self._data.get_data().to_csv(file)
 
     def _make_boxes(self, item):
 
