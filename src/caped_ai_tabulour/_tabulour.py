@@ -249,7 +249,6 @@ class Tabulour(QtWidgets.QTableView):
         ):
             current_tracklet = self._unique_cell_val
             current_tracklet_properties = self._unique_cell_val_properties
-            print(current_tracklet_properties.shape, current_tracklet.shape)
             ndim = current_tracklet.shape[1] - 1
             for i in range(current_tracklet.shape[0]):
                 # TZYX
