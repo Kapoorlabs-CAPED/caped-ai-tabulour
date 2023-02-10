@@ -262,7 +262,9 @@ class Tabulour(QtWidgets.QTableView):
                 and self._id_key in self._data.get_data()
             ):
 
-                value_of_interest = self._data.get_data()[self._id_key][row]
+                value_of_interest = int(
+                    self._data.get_data()[self._id_key][row]
+                )
                 if self._unique_tracks is not None:
                     (
                         self._unique_cell_val,
