@@ -1,7 +1,6 @@
 from typing import List, Union
 
 import napari
-import numpy as np
 import pandas as pd
 from qtpy import QtCore, QtGui, QtWidgets
 
@@ -237,40 +236,6 @@ class Tabulour(QtWidgets.QTableView):
 
         name = QtWidgets.QFileDialog.getSaveFileName(self, "Save File")[0]
         self._data.get_data().to_csv(name + ".csv", index=False)
-
-    def _make_boxes(self, item):
-
-        self._boxes = []
-        self._sizes = []
-        if (
-            self._size_key is not None
-            and self._size_key in self._data.get_data()
-            and self._unique_cell_val is not None
-        ):
-            current_tracklet = self._unique_cell_val
-            current_tracklet_properties = self._unique_cell_val_properties
-            ndim = current_tracklet.shape[1] - 1
-            for i in range(current_tracklet.shape[0]):
-                # TZYX
-                current_tracklet_location = current_tracklet[i][1:]
-                current_tracklet_props = current_tracklet_properties[i][-2:-1]
-                self._boxes.append(
-                    [location for location in current_tracklet_location]
-                )
-                self._sizes.append(
-                    [volume for volume in current_tracklet_props]
-                )
-            for layer in list(self._viewer.layers):
-                if "Boxes" == layer.name:
-                    self._viewer.layers.remove(layer)
-            self._viewer.add_points(
-                np.array(self._boxes),
-                size=np.array(self._sizes),
-                name="Boxes",
-                face_color=[0] * 4,
-                edge_color="green",
-                ndim=ndim,
-            )
 
     def _on_user_click(self, item):
 
