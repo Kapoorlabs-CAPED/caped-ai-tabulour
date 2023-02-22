@@ -275,9 +275,9 @@ class Tabulour(QtWidgets.QTableView):
 
                 if self._plugin.track_id_box is not None:
 
-                    dividing_normal = self._data.get_data()[
-                        self._dividing_key
-                    ][row]
+                    dividing_normal = eval(
+                        self._data.get_data()[self._dividing_key][row]
+                    )
                     if dividing_normal:
                         self.plugin.track_model_type.value = "Dividing"
                         self.plugin.track_id_box.choices = (
