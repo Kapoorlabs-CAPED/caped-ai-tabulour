@@ -1,4 +1,4 @@
-try:
-    from ._version import version as __version__
-except ImportError:
-    __version__ = "unknown"
+from ._tabulour import Tabulour
+from ._data_model import pandasModel
+
+__all__ = ["Tabulour", "pandasModel"]
