@@ -1,4 +1,4 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+config-file = "setup.cfg"
+requires = ["setuptools>=42.0.0", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
-
