@@ -3,7 +3,6 @@
 [![License BSD-3](https://img.shields.io/pypi/l/caped-ai-tabulour.svg?color=green)](https://github.com/Kapoorlabs-CAPED/caped-ai-tabulour/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/caped-ai-tabulour.svg?color=green)](https://pypi.org/project/caped-ai-tabulour)
 [![Python Version](https://img.shields.io/pypi/pyversions/caped-ai-tabulour.svg?color=green)](https://python.org)
-[![tests](https://github.com/Kapoorlabs-CAPED/caped-ai-tabulour/workflows/tests/badge.svg)](https://github.com/Kapoorlabs-CAPED/caped-ai-tabulour/actions)
 [![codecov](https://codecov.io/gh/Kapoorlabs-CAPED/caped-ai-tabulour/branch/main/graph/badge.svg)](https://codecov.io/gh/Kapoorlabs-CAPED/caped-ai-tabulour)
 
 
