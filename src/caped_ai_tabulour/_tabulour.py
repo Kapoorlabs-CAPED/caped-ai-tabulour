@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Dict
 
 import napari
 import pandas as pd
@@ -25,13 +25,20 @@ class Tabulour(QtWidgets.QTableView):
         id_key: Union[int, str] = None,
         size_key: Union[int, str] = None,
         dividing_key: Union[int, str] = None,
-        unique_tracks: dict() = None,
-        unique_track_properties: dict() = None,
+        goblet_key: Union[int, str] = None,
+        basal_key: Union[int,str] = None,
+        radial_key: Union[int,str] = None,
+        unique_tracks: dict = None,
+        unique_track_properties: dict = None,
         boxes: List = [],
         sizes: List = [],
         plugin=None,
         dividing_choices=None,
         normal_choices=None,
+        goblet_choices=None,
+        basal_choices=None,
+        radial_choices=None,
+
     ):
 
         super().__init__(parent)
@@ -45,6 +52,9 @@ class Tabulour(QtWidgets.QTableView):
         self._id_key = id_key
         self._size_key = size_key
         self._dividing_key = dividing_key
+        self._goblet_key = goblet_key
+        self._basal_key = basal_key 
+        self._radial_key = radial_key
         self._unique_tracks = unique_tracks
         self._unique_track_properties = unique_track_properties
         self._boxes = boxes
@@ -55,6 +65,9 @@ class Tabulour(QtWidgets.QTableView):
         self._plugin = plugin
         self._dividing_choices = dividing_choices
         self._normal_choices = normal_choices
+        self._goblet_choices = goblet_choices
+        self._basal_choices = basal_choices 
+        self._radial_choices = radial_choices
 
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
@@ -121,6 +134,30 @@ class Tabulour(QtWidgets.QTableView):
     @dividing_key.setter
     def dividing_key(self, value):
         self._dividing_key = value
+
+    @property
+    def goblet_key(self):
+        return self._goblet_key
+
+    @goblet_key.setter
+    def goblet_key(self, value):
+        self._goblet_key = value
+
+    @property
+    def basal_key(self):
+        return self._basal_key
+
+    @basal_key.setter
+    def basal_key(self, value):
+        self._basal_key = value
+
+    @property
+    def radial_key(self):
+        return self._radial_key
+
+    @radial_key.setter
+    def radial_key(self, value):
+        self._radial_key = value            
 
     @property
     def unique_tracks(self):
@@ -203,6 +240,30 @@ class Tabulour(QtWidgets.QTableView):
         self._dividing_choices = value
 
     @property
+    def goblet_choices(self):
+        return self._goblet_choices
+
+    @goblet_choices.setter
+    def goblet_choices(self, value):
+        self._goblet_choices = value    
+
+    @property
+    def basal_choices(self):
+        return self._basal_choices
+
+    @basal_choices.setter
+    def basal_choices(self, value):
+        self._basal_choices = value
+
+    @property
+    def radial_choices(self):
+        return self._radial_choices
+
+    @radial_choices.setter
+    def radial_choices(self, value):
+        self._radial_choices = value
+
+    @property
     def normal_choices(self):
         return self._normal_choices
 
@@ -278,13 +339,45 @@ class Tabulour(QtWidgets.QTableView):
                     dividing_normal = eval(
                         self._data.get_data()[self._dividing_key][row]
                     )
+                    goblet = eval(
+                        self._data.get_data()[self._goblet_key][row]
+                    )
+                    basal = eval(
+                        self._data.get_data()[self._basal_key][row]
+                    )
+                    radial = eval(
+                        self._data.get_data()[self._radial_key][row]
+                    )
+
+
                     if dividing_normal:
-                        self.plugin.track_model_type.value = "Dividing"
+                        self.plugin.track_model_type.value = "Mitosis"
                         self.plugin.track_id_box.choices = (
                             self._dividing_choices
                         )
+                    if goblet:
+
+                        self.plugin.track_model_type.value = "Goblet"
+                        self.plugin.track_id_box.choices = (
+                            self._goblet_choices
+                        )
+                    if basal:
+
+                        self.plugin.track_model_type.value = "Basal"
+                        self.plugin.track_id_box.choices = (
+                            self._basal_choices
+                        )
+
+                    if radial:
+
+                        self.plugin.track_model_type.value = "Radial"
+                        self.plugin.track_id_box.choices = (
+                            self._radial_choices
+                        )
+
+
                     else:
-                        self.plugin.track_model_type.value = "Non-Dividing"
+                        self.plugin.track_model_type.value = "Non-Mitosis"
                         self.plugin.track_id_box.choices = self._normal_choices
 
                     self.plugin.track_id_box.value = value_of_interest
