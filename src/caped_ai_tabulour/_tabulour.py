@@ -25,9 +25,7 @@ class Tabulour(QtWidgets.QTableView):
         id_key: Union[int, str] = None,
         size_key: Union[int, str] = None,
         dividing_key: Union[int, str] = None,
-        goblet_key: Union[int, str] = None,
-        basal_key: Union[int,str] = None,
-        radial_key: Union[int,str] = None,
+        fate_key: Union[int, str] = None,
         unique_tracks: dict = None,
         unique_track_properties: dict = None,
         boxes: List = [],
@@ -52,9 +50,7 @@ class Tabulour(QtWidgets.QTableView):
         self._id_key = id_key
         self._size_key = size_key
         self._dividing_key = dividing_key
-        self._goblet_key = goblet_key
-        self._basal_key = basal_key 
-        self._radial_key = radial_key
+        self._fate_key = fate_key
         self._unique_tracks = unique_tracks
         self._unique_track_properties = unique_track_properties
         self._boxes = boxes
@@ -136,28 +132,13 @@ class Tabulour(QtWidgets.QTableView):
         self._dividing_key = value
 
     @property
-    def goblet_key(self):
-        return self._goblet_key
+    def fate_key(self):
+        return self._fate_key
 
-    @goblet_key.setter
-    def goblet_key(self, value):
-        self._goblet_key = value
+    @fate_key.setter
+    def fate_key(self, value):
+        self._fate_key = value
 
-    @property
-    def basal_key(self):
-        return self._basal_key
-
-    @basal_key.setter
-    def basal_key(self, value):
-        self._basal_key = value
-
-    @property
-    def radial_key(self):
-        return self._radial_key
-
-    @radial_key.setter
-    def radial_key(self, value):
-        self._radial_key = value            
 
     @property
     def unique_tracks(self):
@@ -339,15 +320,10 @@ class Tabulour(QtWidgets.QTableView):
                     dividing_normal = eval(
                         self._data.get_data()[self._dividing_key][row]
                     )
-                    goblet = eval(
-                        self._data.get_data()[self._goblet_key][row]
+                    fate = eval(
+                        self._data.get_data()[self._fate_key][row]
                     )
-                    basal = eval(
-                        self._data.get_data()[self._basal_key][row]
-                    )
-                    radial = eval(
-                        self._data.get_data()[self._radial_key][row]
-                    )
+                  
 
 
                     if dividing_normal:
@@ -355,25 +331,7 @@ class Tabulour(QtWidgets.QTableView):
                         self.plugin.track_id_box.choices = (
                             self._dividing_choices
                         )
-                    if goblet:
-
-                        self.plugin.track_model_type.value = "Goblet"
-                        self.plugin.track_id_box.choices = (
-                            self._goblet_choices
-                        )
-                    if basal:
-
-                        self.plugin.track_model_type.value = "Basal"
-                        self.plugin.track_id_box.choices = (
-                            self._basal_choices
-                        )
-
-                    if radial:
-
-                        self.plugin.track_model_type.value = "Radial"
-                        self.plugin.track_id_box.choices = (
-                            self._radial_choices
-                        )
+                   
 
 
                     else:
